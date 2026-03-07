@@ -1,0 +1,22 @@
+{% extends "learn_base.html" %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+<div class="content-container">
+<h1>{{ task.title }}</h1>
+<p><span class="badge badge-{{ task.status }}">{{ task.status }}</span> <span class="badge badge-priority">{{ task.priority }}</span></p>
+{% if task.description %}
+<div class="description"><p>{{ task.description }}</p></div>
+{% endif %}
+<p><strong>Due date:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') if task.due_date else 'Not set' }}</p>
+{% if task.category %}
+<p><strong>Category:</strong> {{ task.category.name }}</p>
+{% endif %}
+<p>
+    <a href="{{ url_for('web.task_edit', task_id=task.id) }}" class="btn btn-primary">Edit</a>
+    <form method="post" action="{{ url_for('web.task_delete', task_id=task.id) }}" style="display:inline;" onsubmit="return confirm('Delete this task?');">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a href="{{ url_for('web.task_list') }}" class="btn btn-outline">Back to list</a>
+</p>
+</div>
+{% endblock %}

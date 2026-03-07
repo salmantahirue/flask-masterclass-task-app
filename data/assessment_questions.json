@@ -1,0 +1,264 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "question": "What is the primary purpose of a route in Flask?",
+      "options": [
+        "To connect to the database",
+        "To map a URL and HTTP method to a Python function",
+        "To define a template",
+        "To hash passwords"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "A route maps a URL (and optional HTTP method) to a view function. When a client requests that URL, Flask runs the function and returns its response."
+    },
+    {
+      "id": "q2",
+      "question": "What is a Blueprint in Flask?",
+      "options": [
+        "A database table",
+        "A set of routes (and optional templates/static) registered on the app",
+        "A type of template",
+        "A password hashing algorithm"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "A Blueprint is a modular set of routes (and optional templates/static) that you register on the app. It keeps code organized by feature (e.g. auth, tasks)."
+    },
+    {
+      "id": "q3",
+      "question": "Which HTTP method should be used to create a new task in a REST API?",
+      "options": [
+        "GET",
+        "PUT",
+        "POST",
+        "DELETE"
+      ],
+      "correct_answer": 2,
+      "difficulty": "easy",
+      "explanation": "POST is used for creating new resources. GET is for reading, PUT/PATCH for updating, DELETE for deleting."
+    },
+    {
+      "id": "q4",
+      "question": "How do you return JSON from a Flask route?",
+      "options": [
+        "return json(data)",
+        "return jsonify({'key': 'value'})",
+        "return JSON(data)",
+        "return response.json(data)"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "Use from flask import jsonify and return jsonify({'key': 'value'}). You can add a status code: jsonify({'error': 'Not found'}), 404."
+    },
+    {
+      "id": "q5",
+      "question": "What is Jinja2 in Flask?",
+      "options": [
+        "A database ORM",
+        "A template engine for HTML with variables and blocks",
+        "An authentication library",
+        "A testing framework"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "Jinja2 is Flask's template engine. You write HTML with {{ variable }} and {% block content %} so the server can inject data and reuse layout."
+    },
+    {
+      "id": "q6",
+      "question": "What does the Application Factory pattern (create_app) allow?",
+      "options": [
+        "Faster response times",
+        "Different configs for development, testing, and production",
+        "Automatic database creation",
+        "Built-in authentication"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "The factory create_app(config_name) creates and configures the Flask app. You can use different configs (dev, test, prod) with the same codebase."
+    },
+    {
+      "id": "q7",
+      "question": "How do you access JSON body in a Flask route?",
+      "options": [
+        "request.json",
+        "request.get_json()",
+        "request.body",
+        "request.data"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "Use request.get_json() to parse the request body as JSON. It returns a Python dict or None if the body is not valid JSON."
+    },
+    {
+      "id": "q8",
+      "question": "What is SQLAlchemy ORM used for in Flask?",
+      "options": [
+        "Rendering templates",
+        "Working with the database using Python classes (models) instead of raw SQL",
+        "Handling HTTP requests",
+        "Hashing passwords"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "ORM (Object-Relational Mapping) lets you define models (e.g. Task, User), relationships, and use sessions to add, query, and commit without writing raw SQL."
+    },
+    {
+      "id": "q9",
+      "question": "Why use JWT for API authentication?",
+      "options": [
+        "It is faster than sessions",
+        "It is stateless; the server doesn't store session data; the client sends the token on each request",
+        "It is required by Flask",
+        "It encrypts the password"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "JWT encodes user identity in a signed token. The client sends it in the Authorization header. The server verifies the signature and reads the user id—no server-side session storage."
+    },
+    {
+      "id": "q10",
+      "question": "Why should passwords be hashed before storing?",
+      "options": [
+        "To make them shorter",
+        "If the database is leaked, plain-text passwords are exposed; a hash is one-way so the password cannot be recovered",
+        "To comply with Flask",
+        "To speed up login"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "Hashing (e.g. bcrypt) produces a one-way digest. You can verify a password by hashing the input and comparing, but you cannot recover the password from the hash."
+    },
+    {
+      "id": "q11",
+      "question": "What is the difference between authentication and authorization?",
+      "options": [
+        "They are the same",
+        "Authentication = 'Who are you?'; Authorization = 'What are you allowed to do?'",
+        "Authentication is for API; authorization is for web",
+        "Authorization happens before authentication"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "Authentication verifies identity (login, token). Authorization checks permission (e.g. only your own tasks). Both are needed: valid token (authN) and ownership check (authZ)."
+    },
+    {
+      "id": "q12",
+      "question": "Why use a service layer (e.g. auth_service.register_user)?",
+      "options": [
+        "To make routes faster",
+        "Routes handle HTTP; business logic lives in services so the same logic can be reused from API, web, or tests",
+        "Flask requires it",
+        "To store sessions"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "Routes should parse request and return response. Business logic (check email, hash password, create user) lives in services so it can be reused from API routes, web routes, or tests."
+    },
+    {
+      "id": "q13",
+      "question": "What does @token_required decorator do on an API route?",
+      "options": [
+        "Adds a token to the response",
+        "Runs before the route; reads JWT from request, verifies it; if missing/invalid returns 401; otherwise passes current_user to the route",
+        "Hashes the password",
+        "Creates a new token"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "The decorator runs before the route. It reads the Authorization: Bearer <token> header, decodes and verifies the JWT. If valid, it injects current_user; if not, it returns 401."
+    },
+    {
+      "id": "q14",
+      "question": "How do you prevent a user from accessing another user's task?",
+      "options": [
+        "Use a longer token",
+        "Load the task with filter_by(id=task_id, user_id=current_user.id); if not found return 404",
+        "Hide the task ID in the URL",
+        "Use POST instead of GET"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "Always filter by both resource id and current user id. Task.query.filter_by(id=task_id, user_id=current_user.id).first(). If None, return 404 so you don't leak whether the task exists."
+    },
+    {
+      "id": "q15",
+      "question": "What is Flask-Migrate used for?",
+      "options": [
+        "Rendering templates",
+        "Managing database schema changes (migrations) when you add or change columns",
+        "API authentication",
+        "Password hashing"
+      ],
+      "correct_answer": 1,
+      "difficulty": "hard",
+      "explanation": "db.create_all() only creates new tables; it doesn't alter existing ones. Flask-Migrate generates migration scripts from model changes and applies them so the database stays in sync."
+    },
+    {
+      "id": "q16",
+      "question": "When should you use render_template vs jsonify?",
+      "options": [
+        "Always use jsonify",
+        "render_template for HTML pages (web UI); jsonify for API responses (JSON)",
+        "Always use render_template",
+        "They are interchangeable"
+      ],
+      "correct_answer": 1,
+      "difficulty": "easy",
+      "explanation": "Web UI routes return render_template('page.html', ...) for server-rendered HTML. API routes return jsonify({...}) for JSON so clients (e.g. mobile app) can consume the data."
+    },
+    {
+      "id": "q17",
+      "question": "What is the purpose of url_for in Flask?",
+      "options": [
+        "To validate URLs",
+        "To generate a URL for a given endpoint (e.g. url_for('web.login')) so you don't hardcode paths",
+        "To parse query parameters",
+        "To hash passwords"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "url_for('blueprint.view_name', arg=value) generates the URL for that route. If you change the route path, links and redirects still work."
+    },
+    {
+      "id": "q18",
+      "question": "What does form.validate_on_submit() do in Flask-WTF?",
+      "options": [
+        "Validates the form only on GET",
+        "Returns True if the request is POST/PUT and form validation passes (no errors)",
+        "Submits the form to the server",
+        "Renders the form"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "validate_on_submit() returns True when the request method is POST (or PUT/PATCH) and all validators pass. You use it to know when to process the form and redirect."
+    },
+    {
+      "id": "q19",
+      "question": "Why use Flask-WTF for forms instead of raw request.form?",
+      "options": [
+        "It is faster",
+        "It provides validation, CSRF protection, and structured form classes",
+        "Flask requires it",
+        "It stores data in the database"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "Flask-WTF gives you form classes with validators (required, email, length), automatic CSRF token handling, and easy access to form data (form.email.data)."
+    },
+    {
+      "id": "q20",
+      "question": "What is a one-to-many relationship in SQLAlchemy?",
+      "options": [
+        "One route to many templates",
+        "One record in table A linked to many records in table B (e.g. one User has many Tasks)",
+        "One Blueprint to many routes",
+        "One request to many responses"
+      ],
+      "correct_answer": 1,
+      "difficulty": "medium",
+      "explanation": "One-to-many: one User has many Tasks. In the database, Task has user_id (foreign key). In the model, User has a relationship (e.g. user.tasks) to Task."
+    }
+  ]
+}

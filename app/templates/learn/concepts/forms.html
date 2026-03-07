@@ -1,0 +1,44 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Forms (Flask-WTF)</h1>
+    <p class="lead">Form classes with validation and CSRF protection. (<a href="https://flask.palletsprojects.com/en/3.1.x/patterns/wtforms/" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Why Flask-WTF?</h2>
+    <p>Flask-WTF gives you form classes with validation (required, email, length) and built-in CSRF protection. You define a form class, pass it to the template, and call <code>form.validate_on_submit()</code> in the view.</p>
+    <div class="code-showcase">
+      <pre><code class="language-python"># app/forms.py
+class LoginForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+
+# In view
+form = LoginForm()
+if form.validate_on_submit():
+    user, err = login_user(form.email.data, form.password.data)
+    ...
+return render_template("login.html", form=form)</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>LoginForm</strong> — Email, password.</li>
+      <li><strong>RegisterForm</strong> — Email, password, username.</li>
+      <li><strong>TaskForm</strong> — Title, description, status, priority, due_date, category_id.</li>
+      <li><strong>CategoryForm</strong> — Name.</li>
+      <li>CSRF token is included in forms automatically; validate with <code>form.validate_on_submit()</code>.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_configuration') }}" class="btn btn-secondary">← Configuration</a>
+    <a href="{{ url_for('learn.flask_database') }}" class="btn btn-primary">Database →</a>
+  </section>
+</div>
+{% endblock %}

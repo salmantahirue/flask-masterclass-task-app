@@ -1,0 +1,86 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Expert Design & Architecture</h1>
+    <p class="lead">How we structure the Flask app before writing a single line.</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Application Layers</h2>
+    <p>We split the code into clear layers so each part has a single responsibility.</p>
+
+    <div class="layer-diagram">
+      <div class="layer">
+        <span class="layer-icon">🖥️</span>
+        <div>
+          <strong>Routes (Blueprints)</strong>
+          <p>Handle HTTP: parse request, call service, return response (HTML or JSON).</p>
+        </div>
+      </div>
+      <div class="arrow">⬇️ calls</div>
+      <div class="layer">
+        <span class="layer-icon">⚙️</span>
+        <div>
+          <strong>Services</strong>
+          <p>Business logic: <code>auth_service.register_user</code>, <code>login_user</code>. Reusable from API and web.</p>
+        </div>
+      </div>
+      <div class="arrow">⬇️ uses</div>
+      <div class="layer">
+        <span class="layer-icon">🧊</span>
+        <div>
+          <strong>Models (SQLAlchemy)</strong>
+          <p><code>User</code>, <code>Task</code>, <code>Category</code> with relationships.</p>
+        </div>
+      </div>
+      <div class="arrow">⬇️ uses</div>
+      <div class="layer">
+        <span class="layer-icon">💾</span>
+        <div>
+          <strong>Database</strong>
+          <p>SQLite (dev) or PostgreSQL; Flask-SQLAlchemy + migrations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Project Structure</h2>
+    <div class="code-block">
+<pre>task_management_system/
+  config.py              # Dev / test / prod config
+  run.py                 # Entry: create_app(), app.run()
+  app/
+    __init__.py          # create_app() factory
+    config.py             # App-level config
+    extensions.py         # db, migrate (avoid circular imports)
+    forms.py              # Flask-WTF forms
+    models/               # User, Task, Category
+    routes/               # auth_bp, tasks_bp, categories_bp, web_bp, learn_bp
+    services/             # auth_service
+    templates/            # base.html, learn_base.html, learn/, app pages
+    static/               # style.css, learn.css
+    utils/                # decorators, error_handlers, validators
+  data/                   # interview_preparation.json, assessment_questions.json
+  tests/</pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Blueprints in This Project</h2>
+    <ul class="checklist">
+      <li><strong>learn_bp</strong> — Learning platform: intro, problem, design, Flask concepts, interview, assessment, revision. No URL prefix.</li>
+      <li><strong>web_bp</strong> — Live app: login, register, dashboard, tasks, categories. Prefix <code>/app</code>.</li>
+      <li><strong>auth_bp</strong> — API auth: register, login. Prefix <code>/api/auth</code>.</li>
+      <li><strong>tasks_bp</strong> — API tasks: CRUD. Prefix <code>/api/tasks</code>.</li>
+      <li><strong>categories_bp</strong> — API categories: CRUD. Prefix <code>/api/categories</code>.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_concepts') }}" class="btn btn-primary">Explore Flask Concepts &rarr;</a>
+  </section>
+</div>
+{% endblock %}

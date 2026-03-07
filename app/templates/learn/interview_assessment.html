@@ -1,0 +1,237 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask Assessment Test</h1>
+    <p class="lead">Test your understanding of Flask with multiple-choice questions.</p>
+  </header>
+
+  <div id="assessmentContainer">
+    <div id="levelScreen" class="card-section">
+      <h2>Select Your Experience Level</h2>
+      <p>Choose your level to get questions tailored to your knowledge:</p>
+      <div class="level-selection-grid">
+        <div class="level-card" data-level="interns">
+          <div class="level-icon">🎓</div>
+          <h3>Interns</h3>
+          <p>Just starting with Flask</p>
+          <p class="level-desc">Mix of Easy & Medium questions</p>
+        </div>
+        <div class="level-card" data-level="beginner">
+          <div class="level-icon">🌱</div>
+          <h3>Beginner</h3>
+          <p>Learning the basics</p>
+          <p class="level-desc">Mix of Easy & Medium questions</p>
+        </div>
+        <div class="level-card" data-level="intermediate">
+          <div class="level-icon">⚡</div>
+          <h3>Intermediate</h3>
+          <p>Comfortable with Flask</p>
+          <p class="level-desc">Mix of Medium & Hard questions</p>
+        </div>
+        <div class="level-card" data-level="expert">
+          <div class="level-icon">🚀</div>
+          <h3>Expert</h3>
+          <p>Advanced Flask and API design</p>
+          <p class="level-desc">Mix of Hard & Expert questions</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="startScreen" class="card-section" style="display: none;">
+      <h2>Ready to Test Your Knowledge?</h2>
+      <p>This assessment will test your understanding of Flask.</p>
+      <div class="assessment-info">
+        <p><strong>Number of Questions:</strong> <span id="questionCount">10</span></p>
+        <p><strong>Time:</strong> No time limit</p>
+        <p><strong>Passing Score:</strong> 60%</p>
+        <p><strong>Your Level:</strong> <span id="selectedLevel"></span></p>
+      </div>
+      <button id="startBtn" class="btn btn-primary btn-lg">Start Assessment</button>
+    </div>
+
+    <div id="testScreen" style="display: none;">
+      <div class="test-header">
+        <div class="progress-container">
+          <div class="progress-info">
+            <span id="progressText">Answered: 0 of 10</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+      <div id="questionsList"></div>
+      <div class="test-actions">
+        <button id="submitBtn" class="btn btn-primary btn-lg">Submit Answers</button>
+      </div>
+    </div>
+
+    <div id="resultsScreen" style="display: none;">
+      <div class="results-header">
+        <h2>Assessment Results</h2>
+        <div id="scoreDisplay" class="score-display"></div>
+      </div>
+      <div id="resultsDetails"></div>
+      <div class="test-actions">
+        <button id="retakeBtn" class="btn btn-primary">Retake Assessment</button>
+        <a href="{{ url_for('learn.interview') }}" class="btn btn-secondary">Back to Interview Prep</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="completionModal" class="modal" style="display: none;">
+    <div class="modal-content modal-completion">
+      <div id="modalContent"></div>
+      <button id="closeModal" class="btn btn-primary">Continue</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let questions = [];
+let userAnswers = {};
+let selectedLevel = 'beginner';
+let questionCount = 10;
+
+document.querySelectorAll('.level-card').forEach(card => {
+  card.addEventListener('click', () => {
+    selectedLevel = card.dataset.level;
+    document.getElementById('selectedLevel').textContent = card.querySelector('h3').textContent;
+    document.getElementById('levelScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'block';
+    questionCount = 10;
+    document.getElementById('questionCount').textContent = questionCount;
+  });
+});
+
+document.getElementById('startBtn').addEventListener('click', loadQuestions);
+document.getElementById('submitBtn').addEventListener('click', submitAssessment);
+document.getElementById('retakeBtn').addEventListener('click', () => location.reload());
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('completionModal').style.display = 'none';
+});
+
+function loadQuestions() {
+  fetch('/api/learn/assessment/questions?count=' + questionCount + '&level=' + selectedLevel)
+    .then(res => res.json())
+    .then(data => {
+      questions = data.questions;
+      questionCount = data.total;
+      displayQuestions();
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('testScreen').style.display = 'block';
+    })
+    .catch(() => alert('Error loading questions. Please try again.'));
+}
+
+function displayQuestions() {
+  const container = document.getElementById('questionsList');
+  container.innerHTML = '';
+  questions.forEach((q, index) => {
+    const card = document.createElement('div');
+    card.className = 'question-card assessment-question';
+    card.innerHTML = `
+      <div class="question-header">
+        <span class="question-number">Q${index + 1}</span>
+        <div class="question-content">
+          <h3>${q.question}</h3>
+          <span class="difficulty-badge ${q.difficulty}">${(q.difficulty || '').toUpperCase()}</span>
+        </div>
+      </div>
+      <div class="options-list">
+        ${(q.options || []).map((opt, i) => `
+          <label class="option-item">
+            <input type="radio" name="q_${q.id}" value="${i}" />
+            <span class="option-text">${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  questions.forEach(q => {
+    const sel = document.querySelector('input[name="q_' + q.id + '"]:checked');
+    if (sel) userAnswers[q.id] = parseInt(sel.value);
+  });
+  const answered = Object.keys(userAnswers).length;
+  const total = questions.length;
+  const pct = total ? (answered / total) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = 'Answered: ' + answered + ' of ' + total;
+  document.getElementById('progressPercent').textContent = Math.round(pct) + '%';
+}
+
+document.addEventListener('change', e => { if (e.target.type === 'radio') updateProgress(); });
+
+function submitAssessment() {
+  questions.forEach(q => {
+    const sel = document.querySelector('input[name="q_' + q.id + '"]:checked');
+    if (sel) userAnswers[q.id] = parseInt(sel.value);
+  });
+  if (Object.keys(userAnswers).length < questions.length && !confirm('You have not answered all questions. Submit anyway?'))
+    return;
+  fetch('/api/learn/assessment/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answers: userAnswers })
+  })
+    .then(res => res.json())
+    .then(data => {
+      showCompletionModal(data);
+      displayResults(data);
+    })
+    .catch(() => alert('Error submitting assessment. Please try again.'));
+}
+
+function showCompletionModal(data) {
+  const modal = document.getElementById('completionModal');
+  const content = document.getElementById('modalContent');
+  const passed = data.percentage >= 60;
+  content.innerHTML = passed
+    ? `<div class="completion-success"><div class="completion-icon">🎉</div><h2>Congratulations!</h2><p class="completion-message">You passed the assessment!</p><div class="completion-score"><div class="score-big">${data.percentage}%</div><p>You got ${data.score} out of ${data.total} questions correct.</p><p class="grade-badge">${data.grade}</p></div></div>`
+    : `<div class="completion-fail"><div class="completion-icon">📚</div><h2>Keep Learning!</h2><p class="completion-message">You didn't pass this time.</p><div class="completion-score"><div class="score-big">${data.percentage}%</div><p>You got ${data.score} out of ${data.total} correct.</p><p class="grade-badge">${data.grade}</p></div><p class="retry-suggestion">Review the Flask concepts and try again.</p></div>`;
+  modal.style.display = 'flex';
+}
+
+function displayResults(data) {
+  document.getElementById('testScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  const passed = data.percentage >= 60;
+  document.getElementById('scoreDisplay').innerHTML = `
+    <div class="score-circle ${passed ? 'passed' : 'failed'}">
+      <div class="score-value">${data.percentage}%</div>
+      <div class="score-label">${data.grade}</div>
+    </div>
+    <p class="score-details">You got ${data.score} out of ${data.total} questions correct.</p>
+  `;
+  const details = document.getElementById('resultsDetails');
+  details.innerHTML = '<h3>Question Review</h3>';
+  (data.results || []).forEach((r, i) => {
+    const opts = questions[i] && questions[i].options ? questions[i].options : [];
+    const card = document.createElement('div');
+    card.className = 'result-card ' + (r.is_correct ? 'correct' : 'incorrect');
+    card.innerHTML = `
+      <div class="result-header">
+        <span class="result-icon">${r.is_correct ? '✅' : '❌'}</span>
+        <strong>Question ${i + 1}:</strong> ${r.question}
+      </div>
+      <div class="result-details">
+        <p><strong>Your Answer:</strong> ${opts[r.user_answer] || 'N/A'}</p>
+        <p><strong>Correct Answer:</strong> ${opts[r.correct_answer] || 'N/A'}</p>
+        <p><strong>Explanation:</strong> ${r.explanation || ''}</p>
+      </div>
+    `;
+    details.appendChild(card);
+  });
+}
+</script>
+{% endblock %}

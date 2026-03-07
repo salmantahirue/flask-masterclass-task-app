@@ -1,0 +1,43 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Database (SQLAlchemy)</h1>
+    <p class="lead">ORM: models (User, Task, Category), relationships, queries. (<a href="https://flask.palletsprojects.com/en/3.1.x/patterns/sqlalchemy/" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>What is an ORM?</h2>
+    <p>ORM (Object-Relational Mapping) lets you work with the database using Python classes (models) instead of raw SQL. You define models (e.g. <code>Task</code>), relationships (e.g. user has many tasks), and use <code>db.session</code> to add, query, and commit.</p>
+    <div class="code-showcase">
+      <pre><code class="language-python"># Model
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", backref=db.backref("tasks", lazy="dynamic"))
+
+# Query
+tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.updated_at.desc()).all()
+db.session.add(task)
+db.session.commit()</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>User</strong> — id, email, password_hash, username; has many tasks and categories.</li>
+      <li><strong>Task</strong> — id, title, description, status, priority, due_date, category_id, user_id.</li>
+      <li><strong>Category</strong> — id, name, user_id; has many tasks.</li>
+      <li><strong>Flask-Migrate</strong> — Migrations for schema changes (e.g. add column).</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_forms') }}" class="btn btn-secondary">← Forms</a>
+    <a href="{{ url_for('learn.flask_concepts') }}" class="btn btn-primary">Back to Flask Concepts</a>
+  </section>
+</div>
+{% endblock %}

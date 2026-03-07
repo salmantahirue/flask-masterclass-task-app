@@ -1,0 +1,134 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask Revision & Quick Reference</h1>
+    <p class="lead">Quick summaries, key takeaways, and common mistakes to avoid.</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Flask Concepts Summary</h2>
+    <div class="concept-summary-grid">
+      <div class="summary-card">
+        <h3>🛣️ Routing</h3>
+        <div class="concept-detail">
+          <div class="detail-label">What:</div>
+          <div class="detail-content">Map URL + HTTP method to a view function</div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">How:</div>
+          <div class="detail-content"><code>@bp.route("/path", methods=["GET", "POST"])</code></div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">In Our Project:</div>
+          <div class="detail-content">/app/login, /api/tasks, /learn/flask, etc.</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>📄 Templates (Jinja2)</h3>
+        <div class="concept-detail">
+          <div class="detail-label">What:</div>
+          <div class="detail-content">HTML with variables and blocks for server-rendered pages</div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">How:</div>
+          <div class="detail-content"><code>render_template("page.html", var=value)</code>, <code>{% raw %}{{ var }}{% endraw %}</code>, <code>{% raw %}{% block content %}{% endraw %}</code></div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">In Our Project:</div>
+          <div class="detail-content">learn_base.html, base.html, dashboard.html, task forms</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>🧩 Blueprints</h3>
+        <div class="concept-detail">
+          <div class="detail-label">What:</div>
+          <div class="detail-content">Modular sets of routes (and templates/static) registered on the app</div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">How:</div>
+          <div class="detail-content"><code>Blueprint("name", __name__)</code>, <code>app.register_blueprint(bp, url_prefix="/api/tasks")</code></div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">In Our Project:</div>
+          <div class="detail-content">learn_bp, web_bp, auth_bp, tasks_bp, categories_bp</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>🗄️ Database (SQLAlchemy)</h3>
+        <div class="concept-detail">
+          <div class="detail-label">What:</div>
+          <div class="detail-content">ORM: Python models map to tables; relationships and queries</div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">How:</div>
+          <div class="detail-content"><code>Task.query.filter_by(user_id=id).all()</code>, <code>db.session.add()</code>, <code>db.session.commit()</code></div>
+        </div>
+        <div class="concept-detail">
+          <div class="detail-label">In Our Project:</div>
+          <div class="detail-content">User, Task, Category models; Flask-Migrate for schema changes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Key Takeaways</h2>
+    <ul class="checklist">
+      <li><strong>Application factory:</strong> <code>create_app(config_name)</code> for dev/test/prod</li>
+      <li><strong>Blueprints:</strong> Group routes by feature (auth, tasks, categories, web, learn)</li>
+      <li><strong>Request/Response:</strong> <code>request.get_json()</code>, <code>request.args</code>; <code>jsonify()</code>, <code>render_template()</code>, <code>redirect()</code></li>
+      <li><strong>Forms:</strong> Flask-WTF for validation and CSRF; <code>form.validate_on_submit()</code></li>
+      <li><strong>Auth:</strong> Session for web UI; JWT for API; hash passwords (bcrypt)</li>
+      <li><strong>Service layer:</strong> Business logic in services; routes only handle HTTP</li>
+    </ul>
+  </section>
+
+  <section class="card-section highlight-box">
+    <h2>Common Mistakes to Avoid</h2>
+    <div class="mistakes-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+      <div class="mistake-item" style="background:var(--bg-card);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+        <h4>❌ One big app.py</h4>
+        <p>Putting all routes in one file.</p>
+        <p><strong>✅ Fix:</strong> Use Blueprints (auth_bp, tasks_bp, web_bp).</p>
+      </div>
+      <div class="mistake-item" style="background:var(--bg-card);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+        <h4>❌ Business logic in routes</h4>
+        <p>Doing "check email exists", "hash password" inside the route.</p>
+        <p><strong>✅ Fix:</strong> Move to a service layer (auth_service.register_user).</p>
+      </div>
+      <div class="mistake-item" style="background:var(--bg-card);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+        <h4>❌ Plain-text passwords</h4>
+        <p>Storing passwords as-is in the database.</p>
+        <p><strong>✅ Fix:</strong> Use bcrypt (or similar) to hash before saving.</p>
+      </div>
+      <div class="mistake-item" style="background:var(--bg-card);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+        <h4>❌ No ownership check</h4>
+        <p>Returning any task by ID without checking user_id.</p>
+        <p><strong>✅ Fix:</strong> <code>Task.query.filter_by(id=id, user_id=current_user.id).first()</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Interview Quick Tips</h2>
+    <ul class="checklist">
+      <li><strong>What is Flask?</strong> Lightweight WSGI web framework: routing, request/response, extensions.</li>
+      <li><strong>What is a Blueprint?</strong> Modular set of routes (and optional templates/static) registered on the app.</li>
+      <li><strong>GET vs POST?</strong> GET for reading (no side effects); POST for creating/submitting data.</li>
+      <li><strong>What is the request object?</strong> Holds current HTTP request: URL, method, headers, body (get_json(), args, form).</li>
+      <li><strong>Factory pattern?</strong> create_app(config_name) creates and configures the app for dev/test/prod.</li>
+      <li><strong>JWT?</strong> Signed token encoding user identity; client sends in Authorization header; stateless for APIs.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.interview') }}" class="btn btn-primary">Practice Interview Questions →</a>
+    <a href="{{ url_for('learn.interview_assessment') }}" class="btn btn-primary">Take Assessment →</a>
+  </section>
+</div>
+{% endblock %}

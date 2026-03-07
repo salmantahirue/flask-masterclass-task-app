@@ -1,0 +1,163 @@
+{
+  "easy": [
+    {
+      "id": "easy_1",
+      "question": "What is Flask?",
+      "short_answer": "Flask is a lightweight WSGI web framework for Python. It provides routing (URL to function), request/response handling, and supports extensions for databases, auth, and more.",
+      "detailed_explanation": "Flask is a micro web framework. It doesn't force a particular structure—you choose how to organize routes, templates, and database. It's built on Werkzeug (WSGI) and Jinja2 (templates).",
+      "analogy": "Think of Flask as a minimal kitchen: it gives you a stove and a sink (routing, request/response). You bring your own pots (database, auth) and decide the recipe (project structure).",
+      "code_example": "from flask import Flask\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    return 'Hello, World!'\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+      "project_usage": "In our Task Management System, we use Flask with an application factory (create_app), Blueprints for auth, tasks, categories, web UI, and learning platform. The app serves both REST API and server-rendered HTML."
+    },
+    {
+      "id": "easy_2",
+      "question": "What is a route in Flask?",
+      "short_answer": "A route maps a URL (and optional HTTP method) to a Python function. When a client requests that URL, Flask runs the function and returns its response (HTML, JSON, or redirect).",
+      "detailed_explanation": "Routes are defined with the @app.route() or @bp.route() decorator. You can specify methods (GET, POST, etc.) and URL variables (e.g. /tasks/<int:task_id>).",
+      "analogy": "A route is like a receptionist: when someone asks for '/login', the receptionist (Flask) calls the login() function and returns whatever that function gives back.",
+      "code_example": "@web_bp.route('/login', methods=['GET', 'POST'])\ndef login():\n    form = LoginForm()\n    if form.validate_on_submit():\n        # ...\n    return render_template('login.html', form=form)",
+      "project_usage": "We have routes like /app/login (web UI), /api/auth/login (API), /learn/problem (learning platform). Each route is in the appropriate Blueprint."
+    },
+    {
+      "id": "easy_3",
+      "question": "What is a Blueprint in Flask?",
+      "short_answer": "A Blueprint is a set of routes (and optional templates/static) that you register on the app. It keeps code organized by feature (e.g. auth, tasks, categories) instead of one big file.",
+      "detailed_explanation": "Blueprints are like mini-apps. You define routes on the Blueprint, then register it on the main app with an optional url_prefix. This allows modular, scalable applications.",
+      "analogy": "Think of Blueprints as departments in a company. The auth department handles login/register, the tasks department handles task CRUD. Each department (Blueprint) is registered with the main company (app).",
+      "code_example": "web_bp = Blueprint('web', __name__)\n@web_bp.route('/login')\ndef login(): ...\n\n# In create_app:\napp.register_blueprint(web_bp, url_prefix='/app')",
+      "project_usage": "We have learn_bp (learning platform), web_bp (live app at /app), auth_bp (/api/auth), tasks_bp (/api/tasks), categories_bp (/api/categories). Each Blueprint lives in app/routes/."
+    },
+    {
+      "id": "easy_4",
+      "question": "What is the difference between GET and POST?",
+      "short_answer": "GET is for reading data; it should not change server state. POST is for creating or submitting data (e.g. register, create task). GET is used to list tasks; POST to create a task.",
+      "detailed_explanation": "GET requests are idempotent and cacheable. POST requests send data in the body and are used for mutations. In REST, GET = read, POST = create, PUT/PATCH = update, DELETE = delete.",
+      "analogy": "GET is like reading a menu (no change). POST is like placing an order (something gets created or changed).",
+      "code_example": "@tasks_bp.route('/', methods=['GET'])  # List tasks\n@tasks_bp.route('/', methods=['POST'])  # Create task",
+      "project_usage": "GET /api/tasks lists tasks; POST /api/tasks creates a task. GET /app/tasks shows the task list page; POST /app/tasks/new submits the new task form."
+    },
+    {
+      "id": "easy_5",
+      "question": "What is the request object in Flask?",
+      "short_answer": "The Flask request object holds the current HTTP request: URL, method, headers, and body. Use request.get_json() for JSON, request.args for query parameters, request.form for form data.",
+      "detailed_explanation": "request is a global (thread-local) that Flask sets for each request. You can read JSON body, query string, form data, headers, and cookies from it.",
+      "analogy": "request is like the envelope and letter you receive: the envelope has the address (URL), method (GET/POST), and the letter (body) contains the actual data.",
+      "code_example": "data = request.get_json()  # JSON body\nstatus = request.args.get('status')  # ?status=pending\nemail = form.email.data  # Form (Flask-WTF)",
+      "project_usage": "In API routes we use request.get_json() for login payload; in list tasks we use request.args.get('status') for filters. In web forms we use Flask-WTF form objects."
+    },
+    {
+      "id": "easy_6",
+      "question": "How do you return JSON from a Flask route?",
+      "short_answer": "Use from flask import jsonify and return jsonify({'key': 'value'}). You can add a status code: jsonify({'error': 'Not found'}), 404.",
+      "detailed_explanation": "jsonify() converts a Python dict to a JSON response with Content-Type: application/json. You can pass a second value for status code (200, 201, 400, 401, 404, 500).",
+      "analogy": "jsonify is like packaging your Python data into a standard JSON box that any client (browser, mobile app) can open.",
+      "code_example": "return jsonify({'tasks': [t.to_dict() for t in tasks]}), 200\nreturn jsonify({'error': 'Task not found'}), 404",
+      "project_usage": "All API routes under /api/auth, /api/tasks, /api/categories return JSON via jsonify(). Web UI routes return render_template() for HTML."
+    },
+    {
+      "id": "easy_7",
+      "question": "What is the Application Factory pattern in Flask?",
+      "short_answer": "The factory is a function (e.g. create_app(config_name)) that creates and configures the Flask app. It lets you use different configs for development, testing, and production.",
+      "detailed_explanation": "Instead of creating app = Flask(__name__) at module level, you create the app inside a function. This avoids circular imports and allows multiple app instances (e.g. for testing).",
+      "analogy": "Instead of one global restaurant, you have a factory that can produce different restaurants (dev, test, prod) with different menus (configs).",
+      "code_example": "def create_app(config_name='development'):\n    app = Flask(__name__)\n    app.config.from_object(config_by_name[config_name])\n    db.init_app(app)\n    app.register_blueprint(web_bp, url_prefix='/app')\n    return app",
+      "project_usage": "Our app/__init__.py defines create_app(). run.py calls app = create_app() and then app.run(). Tests can call create_app('testing') for a clean app instance."
+    },
+    {
+      "id": "easy_8",
+      "question": "What is Jinja2?",
+      "short_answer": "Jinja2 is Flask's template engine. You write HTML with placeholders ({{ variable }}) and blocks ({% block content %}) so the server can inject data and reuse layout (e.g. base.html).",
+      "detailed_explanation": "Jinja2 allows variables, conditionals, loops, and template inheritance. Templates are rendered with render_template('page.html', var=value).",
+      "analogy": "Jinja2 is like a mad-libs page: you have the structure (base.html) and blanks ({{ user.name }}) that get filled in when the page is rendered.",
+      "code_example": "<!-- base.html -->\n{% block content %}{% endblock %}\n\n<!-- dashboard.html -->\n{% extends 'base.html' %}\n{% block content %}\n  <h1>Welcome, {{ user.username }}</h1>\n{% endblock %}",
+      "project_usage": "We use learn_base.html for all learning pages; base.html for the live app (login, dashboard, tasks). Dashboard and task forms use {% extends 'base.html' %} and pass user, tasks, etc."
+    }
+  ],
+  "medium": [
+    {
+      "id": "med_1",
+      "question": "What is SQLAlchemy ORM?",
+      "short_answer": "ORM (Object-Relational Mapping) lets you work with the database using Python classes (models) instead of raw SQL. You define models (e.g. Task), relationships, and use sessions to add, query, and commit.",
+      "detailed_explanation": "SQLAlchemy maps Python classes to database tables. You use Task.query.filter_by(user_id=id).all() instead of writing SELECT * FROM task WHERE user_id=?. Relationships (e.g. user.tasks) are defined on models.",
+      "analogy": "ORM is like a translator: you speak Python (objects, attributes), and it translates to SQL (tables, columns) and back.",
+      "code_example": "class Task(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    title = db.Column(db.String(200))\n    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))\ntasks = Task.query.filter_by(user_id=user.id).all()",
+      "project_usage": "We have User, Task, Category models in app/models/. Routes use Task.query.filter_by(user_id=current_user.id). Web and API both use the same models and db.session."
+    },
+    {
+      "id": "med_2",
+      "question": "What is JWT and why use it for APIs?",
+      "short_answer": "JWT (JSON Web Token) is a signed token that encodes user identity (e.g. user_id). The client sends it in the Authorization: Bearer <token> header. The server verifies the signature and reads the user id. It's stateless and works well for REST APIs.",
+      "detailed_explanation": "JWT has three parts: header, payload (e.g. user_id, exp), and signature. The server signs it with a secret; clients can't forge it. No server-side session storage needed.",
+      "analogy": "JWT is like a stamped ticket: the server stamps it (signs it) when you log in. You show the ticket on each request; the server verifies the stamp instead of looking you up in a list.",
+      "code_example": "token = jwt.encode({'user_id': user.id}, app.config['JWT_SECRET'], algorithm='HS256')\n# Client: Authorization: Bearer <token>\npayload = jwt.decode(token, app.config['JWT_SECRET'])",
+      "project_usage": "API login returns a JWT. The @token_required decorator on API routes reads the token from the header, decodes it, and injects current_user. Web UI uses session instead."
+    },
+    {
+      "id": "med_3",
+      "question": "Why hash passwords instead of storing them in plain text?",
+      "short_answer": "If the database is leaked, plain-text passwords are exposed. A hash is one-way: you can check a password against the hash, but you can't recover the password from the hash. We use bcrypt to hash passwords before saving.",
+      "detailed_explanation": "Hashing produces a fixed-length string from the password. Same password always gives the same hash (with the same salt). To verify, you hash the input and compare. Bcrypt includes a salt and is slow (good for passwords).",
+      "analogy": "Hashing is like shredding: you can verify that a document matches the shreds (check password), but you can't reassemble the original document from the shreds (recover password).",
+      "code_example": "from bcrypt import hashpw, checkpw\nhashed = hashpw(password.encode(), gensalt())\n# Check: checkpw(input_password.encode(), hashed)",
+      "project_usage": "auth_service.register_user() hashes the password with bcrypt before saving User. login_user() uses checkpw to verify the password. Passwords are never stored in plain text."
+    },
+    {
+      "id": "med_4",
+      "question": "What is the difference between authentication and authorization?",
+      "short_answer": "Authentication = 'Who are you?' (login, verify identity). Authorization = 'What are you allowed to do?' (e.g. only your own tasks). In this project, JWT/session handles authentication; checking task.user_id == current_user.id handles authorization.",
+      "detailed_explanation": "AuthN proves identity (password, token). AuthZ checks permission (can this user access this resource?). Always verify both: valid token (authN) and ownership or role (authZ).",
+      "analogy": "Authentication is showing your ID at the door. Authorization is being told which rooms you're allowed to enter.",
+      "code_example": "task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()\nif not task:\n    return jsonify({'error': 'Task not found'}), 404",
+      "project_usage": "After @token_required (authN), we load the task with user_id=current_user.id. If no row is found, we return 404 so we don't leak whether the task exists or belongs to someone else."
+    },
+    {
+      "id": "med_5",
+      "question": "Why use a service layer (e.g. auth_service.register_user)?",
+      "short_answer": "Routes should handle HTTP (parse request, return response). Business logic (e.g. 'check email exists', 'hash password', 'create user') lives in services. That way the same logic can be used from API routes, web routes, or tests without duplicating code.",
+      "detailed_explanation": "Services encapsulate use cases. The route calls auth_service.register_user(email, password, username); the service does validation, hashing, and DB write. If you add a CLI or background job, you reuse the service.",
+      "analogy": "Routes are the waiters (take order, bring food). Services are the kitchen (cook the same dish whether it's dine-in, takeout, or delivery).",
+      "code_example": "# In route:\nuser, err = register_user(form.email.data, form.password.data, form.username.data)\nif err: flash(err); return render_template(...)\n# In auth_service: check email, hash, create User, commit",
+      "project_usage": "auth_service has register_user and login_user. Web login and API login both call login_user(). Validation and password hashing are in one place."
+    }
+  ],
+  "hard": [
+    {
+      "id": "hard_1",
+      "question": "What are Flask error handlers?",
+      "short_answer": "Error handlers are functions registered with @app.errorhandler(404) (or 400, 401, 500). When an exception or abort() happens, Flask calls the right handler so you return a consistent JSON (or HTML) instead of a default error page.",
+      "detailed_explanation": "You can register handlers for specific HTTP status codes or exception classes. For APIs you typically return jsonify({'error': '...'}), status_code. For web you can return a custom error template.",
+      "analogy": "Error handlers are like a catch-all desk: when something goes wrong (404, 500), the request is sent there so you respond in a consistent way.",
+      "code_example": "@app.errorhandler(404)\ndef not_found(e):\n    return jsonify({'error': 'Not found'}), 404",
+      "project_usage": "We register error handlers in app/utils/error_handlers.py for 404, 500, and possibly 400/401 so API and web get consistent error responses."
+    },
+    {
+      "id": "hard_2",
+      "question": "A client sends POST /api/tasks without a token. What should happen?",
+      "short_answer": "The @token_required decorator runs first. It finds no (or invalid) token and returns 401 Unauthorized with a message like 'Token is missing' or 'Invalid token'. The route body is never executed.",
+      "detailed_explanation": "Decorators run before the view. token_required reads the Authorization header, tries to decode the JWT, and if it fails, returns 401 immediately. The route function is only called if the token is valid.",
+      "analogy": "The decorator is like a bouncer: no valid ticket (token), no entry (route not run).",
+      "code_example": "@tasks_bp.route('/', methods=['POST'])\n@token_required\ndef create_task():\n    # Only runs if token is valid\n    ...",
+      "project_usage": "All API task and category routes use @token_required. Unauthenticated requests get 401 before any business logic runs."
+    },
+    {
+      "id": "hard_3",
+      "question": "How would you add 'search tasks by title'?",
+      "short_answer": "In the list-tasks route, read a query parameter (e.g. q = request.args.get('q')). If present, add a filter: Task.title.ilike(f'%{q}%') (with parameterization to avoid SQL injection). Return the same paginated list format.",
+      "detailed_explanation": "Use SQLAlchemy's ilike for case-insensitive partial match. Never concatenate user input into raw SQL; use the ORM or parameterized queries. Sanitize or limit length if needed.",
+      "analogy": "Search is like a filter: the list is already 'all my tasks'; you add a filter 'where title contains this text'.",
+      "code_example": "q = request.args.get('q')\nquery = Task.query.filter_by(user_id=current_user.id)\nif q:\n    query = query.filter(Task.title.ilike(f'%{q}%'))\ntasks = query.all()",
+      "project_usage": "We could add ?q=flask to GET /api/tasks and filter Task.title.ilike('%flask%') in the tasks_bp list route. Same for web task list with a search box."
+    }
+  ],
+  "expert": [
+    {
+      "id": "exp_1",
+      "question": "Why might we use Flask-Migrate instead of only db.create_all()?",
+      "short_answer": "db.create_all() creates tables that don't exist but does not change existing tables. When you add or change columns (e.g. add a 'tags' column to Task), you need migrations to alter the schema safely. Flask-Migrate generates migration scripts and applies them so the database stays in sync with the models.",
+      "detailed_explanation": "Migrations are versioned schema changes. You run flask db migrate to generate a script from model diff, review it, then flask db upgrade to apply. This allows reproducible deploys and rollbacks.",
+      "analogy": "create_all is like building a new house. Migrations are like renovation plans: add a room, change a wall, without tearing down the whole house.",
+      "code_example": "flask db migrate -m 'Add tags to Task'\n# Edit migration file if needed\nflask db upgrade",
+      "project_usage": "We use Flask-Migrate. When we add a new column to Task or User, we run migrate and upgrade instead of dropping and recreating the database, so existing data is preserved."
+    }
+  ]
+}

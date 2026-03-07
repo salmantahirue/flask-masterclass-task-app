@@ -1,0 +1,103 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Interview Preparation Questions</h1>
+    <p class="lead" id="difficultyLabel">Loading questions...</p>
+  </header>
+
+  <div class="difficulty-selector">
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=easy" class="btn btn-sm btn-outline">Easy</a>
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=medium" class="btn btn-sm btn-outline">Medium</a>
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=hard" class="btn btn-sm btn-outline">Hard</a>
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=expert" class="btn btn-sm btn-outline">Expert</a>
+  </div>
+
+  <div id="questionsContainer">
+    <p>Loading questions...</p>
+  </div>
+
+  <div id="detailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalQuestion"></h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.interview') }}" class="btn btn-secondary">← Back to Interview Prep</a>
+    <a href="{{ url_for('learn.interview_assessment') }}" class="btn btn-primary">Take Assessment →</a>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const difficulty = new URLSearchParams(window.location.search).get('difficulty') || 'easy';
+document.getElementById('difficultyLabel').textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1) + ' Level Questions';
+
+const modal = document.getElementById('detailModal');
+const closeModal = document.getElementById('closeModal');
+closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+let allQuestions = [];
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text || '';
+  return div.innerHTML;
+}
+
+function showDetails(index) {
+  const q = allQuestions[index];
+  document.getElementById('modalQuestion').textContent = q.question;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="answer-type"><strong>📖 Detailed Explanation:</strong><p>${escapeHtml(q.detailed_explanation)}</p></div>
+    <div class="answer-type"><strong>🌍 Real-World Analogy:</strong><p>${escapeHtml(q.analogy)}</p></div>
+    <div class="answer-type"><strong>💻 Code Example:</strong><pre><code class="language-python">${escapeHtml(q.code_example)}</code></pre></div>
+    <div class="answer-type highlight-box"><strong>📋 How We Use This in Our Task Management System:</strong><p>${escapeHtml(q.project_usage)}</p></div>
+  `;
+  modal.style.display = 'flex';
+  setTimeout(() => { if (window.Prism) Prism.highlightAll(); }, 100);
+}
+
+fetch('/api/learn/interview/questions?difficulty=' + difficulty)
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    allQuestions = data.questions || [];
+    if (allQuestions.length === 0) {
+      container.innerHTML = '<p>No questions found for this difficulty level.</p>';
+      return;
+    }
+    allQuestions.forEach((q, index) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.innerHTML = `
+        <div class="question-header">
+          <span class="question-number">Q${index + 1}</span>
+          <h3>${escapeHtml(q.question)}</h3>
+        </div>
+        <div class="answer-section">
+          <div class="short-answer-box">
+            <div class="answer-label">📝 Short Interview Answer:</div>
+            <p class="short-answer-text">${escapeHtml(q.short_answer)}</p>
+            <button class="btn btn-outline btn-detail" data-index="${index}">More Detail →</button>
+          </div>
+        </div>
+      `;
+      card.querySelector('.btn-detail').addEventListener('click', () => showDetails(index));
+      container.appendChild(card);
+    });
+  })
+  .catch(() => {
+    document.getElementById('questionsContainer').innerHTML = '<p class="message err">Error loading questions. Please try again.</p>';
+  });
+</script>
+{% endblock %}

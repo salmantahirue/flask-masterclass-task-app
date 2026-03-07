@@ -1,0 +1,31 @@
+{% extends "learn_base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="center-stage">
+  <div class="auth-card">
+    <header>
+      <h2>Login</h2>
+      <p class="subtitle">Access your account</p>
+    </header>
+    <form method="post" class="form">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control", placeholder="you@example.com") }}
+        {% if form.email.errors %}
+        <span class="error">{{ form.email.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.password.label }}
+        {{ form.password(class="form-control", placeholder="••••••••") }}
+        {% if form.password.errors %}
+        <span class="error">{{ form.password.errors[0] }}</span>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary full-width">Login</button>
+    </form>
+    <p class="auth-link">Don't have an account? <a href="{{ url_for('web.register') }}">Register</a></p>
+  </div>
+</div>
+{% endblock %}

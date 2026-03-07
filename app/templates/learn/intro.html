@@ -1,0 +1,100 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Welcome to the Task Management Project</h1>
+    <p class="lead">A complete, step-by-step journey to master Flask.</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Why This Project?</h2>
+    <p>
+      Most tutorials teach Flask concepts in isolation. "This is a route," "This is a template."
+      But they rarely show <strong>how to put it all together</strong> into a real application.
+    </p>
+    <p>
+      In this project, we build a fully functional <strong>Task Management System</strong> from scratch.
+      You will learn not just <em>syntax</em>, but <strong>web application architecture</strong> with Flask.
+    </p>
+  </section>
+
+  <section class="card-section">
+    <div class="highlight-box">
+      <h3>Learning Approach</h3>
+      <p>
+        This is not just code—it's a <strong>complete learning journey</strong>. Each concept is explained with:
+      </p>
+      <ul>
+        <li>Clear explanations and analogies</li>
+        <li>Real code examples from the project</li>
+        <li>References to <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener">Flask documentation</a></li>
+        <li>Step-by-step implementation guides</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>What You'll Learn</h2>
+    <div class="learning-path">
+      <div class="path-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Problem Analysis</h4>
+          <p>Understand the Task Management System: users, tasks, categories, and requirements.</p>
+        </div>
+      </div>
+      <div class="path-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Expert Design</h4>
+          <p>How we structure the app: blueprints, models, services, and configuration.</p>
+        </div>
+      </div>
+      <div class="path-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Flask Concepts</h4>
+          <p>Routing, templates, request/response, Blueprints, configuration, forms, and database (SQLAlchemy).</p>
+        </div>
+      </div>
+      <div class="path-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Interview & Assessment</h4>
+          <p>Flask interview questions and MCQ-based assessment to test your knowledge.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="feature-card">
+      <div class="card-icon">🛣️</div>
+      <h3>Routing & Blueprints</h3>
+      <p>URLs map to view functions; Blueprints keep auth, tasks, and categories organized.</p>
+    </div>
+    <div class="feature-card">
+      <div class="card-icon">📄</div>
+      <h3>Jinja2 Templates</h3>
+      <p>Server-rendered HTML with inheritance, variables, and blocks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="card-icon">🗄️</div>
+      <h3>SQLAlchemy ORM</h3>
+      <p>Models (User, Task, Category), relationships, and queries—no raw SQL required.</p>
+    </div>
+    <div class="feature-card">
+      <div class="card-icon">🔐</div>
+      <h3>Auth & API</h3>
+      <p>Sessions for web UI, JWT for REST API; password hashing and protected routes.</p>
+    </div>
+  </section>
+
+  <section class="call-to-action">
+    <h3>Ready to start?</h3>
+    <p>First, understand the problem we are solving.</p>
+    <a href="{{ url_for('learn.problem') }}" class="btn btn-primary">Go to Problem Statement &rarr;</a>
+  </section>
+</div>
+{% endblock %}

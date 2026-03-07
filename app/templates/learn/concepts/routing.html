@@ -1,0 +1,42 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Routing</h1>
+    <p class="lead">Map URLs and HTTP methods to view functions. (<a href="https://flask.palletsprojects.com/en/3.1.x/quickstart/#routing" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>What is a Route?</h2>
+    <p>A route maps a URL (and optional HTTP method) to a Python function. When a client requests that URL, Flask runs the function and returns its response (HTML, JSON, or redirect).</p>
+    <div class="code-showcase">
+      <pre><code class="language-python">@web_bp.route("/login", methods=["GET", "POST"])
+def login():
+    if form.validate_on_submit():
+        # ...
+    return render_template("login.html", form=form)
+
+@tasks_bp.route("/", methods=["GET"])
+@token_required
+def list_tasks():
+    tasks = Task.query.filter_by(user_id=current_user.id).all()
+    return jsonify([t.to_dict() for t in tasks])</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>Web UI:</strong> <code>/app/login</code>, <code>/app/dashboard</code>, <code>/app/tasks</code>, <code>/app/categories</code>.</li>
+      <li><strong>API:</strong> <code>/api/auth/register</code>, <code>/api/auth/login</code>, <code>/api/tasks</code>, <code>/api/categories</code>.</li>
+      <li><strong>Learning:</strong> <code>/</code>, <code>/learn/problem</code>, <code>/learn/flask</code>, etc.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_concepts') }}" class="btn btn-secondary">← Back to Flask Concepts</a>
+    <a href="{{ url_for('learn.flask_templates') }}" class="btn btn-primary">Templates →</a>
+  </section>
+</div>
+{% endblock %}

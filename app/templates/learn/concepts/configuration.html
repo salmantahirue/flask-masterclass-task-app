@@ -1,0 +1,43 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Configuration</h1>
+    <p class="lead">App settings: secret key, database URL, env-based config. (<a href="https://flask.palletsprojects.com/en/3.1.x/config/" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Application Factory</h2>
+    <p>The factory is a function <code>create_app(config_name)</code> that creates and configures the Flask app. It lets you use different configs for development, testing, and production.</p>
+    <div class="code-showcase">
+      <pre><code class="language-python"># config.py
+class Config:
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "sqlite:///task_management.db"
+
+# app/__init__.py
+def create_app(config_name="development"):
+    app = Flask(__name__)
+    app.config.from_object(config_by_name[config_name])
+    db.init_app(app)
+    # ... register blueprints
+    return app</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>config.py</strong> — Development, test, production config classes.</li>
+      <li><strong>SECRET_KEY</strong> — For sessions and CSRF; set via env in production.</li>
+      <li><strong>SQLALCHEMY_DATABASE_URI</strong> — SQLite for dev; PostgreSQL or other for prod.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_request_response') }}" class="btn btn-secondary">← Request & Response</a>
+    <a href="{{ url_for('learn.flask_forms') }}" class="btn btn-primary">Forms →</a>
+  </section>
+</div>
+{% endblock %}

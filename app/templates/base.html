@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Management{% endblock %} | Flask Learning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('web.dashboard') }}" class="brand">Task Manager</a>
+        <div class="nav-links">
+            <a href="{{ url_for('learn.intro') }}">Learning</a>
+            {% if current_user %}
+            <a href="{{ url_for('web.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('web.task_list') }}">Tasks</a>
+            <a href="{{ url_for('web.category_list') }}">Categories</a>
+            <span class="user-email">{{ current_user.email }}</span>
+            <a href="{{ url_for('web.logout') }}" class="btn btn-outline">Logout</a>
+            {% else %}
+            <a href="{{ url_for('web.login') }}">Login</a>
+            <a href="{{ url_for('web.register') }}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Flask Task Management System — Learning Project</p>
+    </footer>
+</body>
+</html>

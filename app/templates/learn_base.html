@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Flask Learning{% endblock %} | Task Management Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='learn.css') }}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="{{ url_for('learn.intro') }}" class="brand brand-link">
+                <div class="logo-icon">🌶️</div>
+                <div class="logo-text">
+                    <span>Flask</span>
+                    <small>Masterclass</small>
+                </div>
+            </a>
+
+            <nav class="nav-menu">
+                <p class="nav-header">LEARNING GUIDE</p>
+                <a href="{{ url_for('learn.intro') }}" class="nav-link {% if request.endpoint == 'learn.intro' %}active{% endif %}">
+                    <span class="icon">📚</span> Introduction
+                </a>
+                <a href="{{ url_for('learn.problem') }}" class="nav-link {% if request.endpoint == 'learn.problem' %}active{% endif %}">
+                    <span class="icon">🎯</span> Problem Statement
+                </a>
+                <a href="{{ url_for('learn.design') }}" class="nav-link {% if request.endpoint == 'learn.design' %}active{% endif %}">
+                    <span class="icon">🧠</span> Expert Design
+                </a>
+                <a href="{{ url_for('learn.flask_concepts') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('learn.flask') %}active{% endif %}">
+                    <span class="icon">🧩</span> Flask Concepts
+                </a>
+                <a href="{{ url_for('learn.interview') }}" class="nav-link {% if request.endpoint and 'interview' in request.endpoint %}active{% endif %}">
+                    <span class="icon">🎤</span> Interview Prep
+                </a>
+                <a href="{{ url_for('learn.revision') }}" class="nav-link {% if request.endpoint == 'learn.revision' %}active{% endif %}">
+                    <span class="icon">📋</span> Revision
+                </a>
+
+                <p class="nav-header">LIVE PROJECT</p>
+                <a href="{{ url_for('web.login') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('web.') %}active{% endif %}">
+                    <span class="icon">📋</span> Task App Demo
+                </a>
+            </nav>
+
+            <div class="nav-footer">
+                <small>Mentorship Edition v1.0</small>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

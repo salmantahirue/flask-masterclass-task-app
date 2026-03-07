@@ -1,0 +1,42 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Request & Response</h1>
+    <p class="lead">Access request data; return HTML, JSON, or redirects. (<a href="https://flask.palletsprojects.com/en/3.1.x/quickstart/#accessing-request-data" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>The request Object</h2>
+    <p>The Flask <code>request</code> object holds the current HTTP request: URL, method, headers, and body. Use <code>request.get_json()</code> for JSON, <code>request.args</code> for query parameters, <code>request.form</code> for form data.</p>
+    <div class="code-showcase">
+      <pre><code class="language-python"># JSON body (API)
+data = request.get_json()
+email = data.get("email")
+
+# Query parameters: GET /api/tasks?status=pending
+status = request.args.get("status")
+
+# Form data (web UI)
+form = LoginForm()
+if form.validate_on_submit():
+    email = form.email.data</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Returning Responses</h2>
+    <ul class="checklist">
+      <li><strong>HTML:</strong> <code>return render_template("dashboard.html", user=user)</code></li>
+      <li><strong>JSON:</strong> <code>return jsonify({"tasks": [...]}), 200</code> or <code>jsonify({"error": "Not found"}), 404</code></li>
+      <li><strong>Redirect:</strong> <code>return redirect(url_for("web.dashboard"))</code></li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_blueprints') }}" class="btn btn-secondary">← Blueprints</a>
+    <a href="{{ url_for('learn.flask_configuration') }}" class="btn btn-primary">Configuration →</a>
+  </section>
+</div>
+{% endblock %}

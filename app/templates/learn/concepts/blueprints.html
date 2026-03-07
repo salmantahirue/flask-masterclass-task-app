@@ -1,0 +1,46 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Blueprints</h1>
+    <p class="lead">Modular sets of routes (and templates/static) registered on the app. (<a href="https://flask.palletsprojects.com/en/3.1.x/blueprints/" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>What is a Blueprint?</h2>
+    <p>A Blueprint is a set of routes (and optional templates/static) that you register on the app. It keeps code organized by feature instead of putting everything in one file.</p>
+    <div class="code-showcase">
+      <pre><code class="language-python"># app/routes/web.py
+web_bp = Blueprint("web", __name__)
+
+@web_bp.route("/login", methods=["GET", "POST"])
+def login():
+    ...
+
+# app/__init__.py
+app.register_blueprint(learn_bp)   # no prefix -> /, /learn/...
+app.register_blueprint(web_bp, url_prefix="/app")  # /app/login, /app/dashboard
+app.register_blueprint(auth_bp, url_prefix="/api/auth")
+app.register_blueprint(tasks_bp, url_prefix="/api/tasks")
+app.register_blueprint(categories_bp, url_prefix="/api/categories")</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>learn_bp</strong> — Learning platform (intro, problem, design, Flask concepts, interview, assessment, revision).</li>
+      <li><strong>web_bp</strong> — Live app: login, register, dashboard, tasks, categories (prefix <code>/app</code>).</li>
+      <li><strong>auth_bp</strong> — API auth: register, login (prefix <code>/api/auth</code>).</li>
+      <li><strong>tasks_bp</strong> — API tasks CRUD (prefix <code>/api/tasks</code>).</li>
+      <li><strong>categories_bp</strong> — API categories CRUD (prefix <code>/api/categories</code>).</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_templates') }}" class="btn btn-secondary">← Templates</a>
+    <a href="{{ url_for('learn.flask_request_response') }}" class="btn btn-primary">Request & Response →</a>
+  </section>
+</div>
+{% endblock %}

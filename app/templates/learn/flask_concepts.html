@@ -1,0 +1,73 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask Concepts in Action</h1>
+    <p class="lead">Where exactly do we use Flask in this project? (Based on <a href="https://flask.palletsprojects.com/" target="_blank" rel="noopener">Flask Documentation</a>)</p>
+  </header>
+
+  <div class="concept-grid">
+    <a href="{{ url_for('learn.flask_routing') }}" class="concept-card clickable">
+      <div class="concept-icon">🛣️</div>
+      <h3>Routing</h3>
+      <p><strong>What:</strong> Map URLs and HTTP methods to view functions.</p>
+      <p><strong>Where:</strong> <code>@web_bp.route("/login")</code>, <code>@tasks_bp.route("/", methods=["GET"])</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_templates') }}" class="concept-card clickable">
+      <div class="concept-icon">📄</div>
+      <h3>Templates (Jinja2)</h3>
+      <p><strong>What:</strong> HTML with placeholders and blocks for server-rendered pages.</p>
+      <p><strong>Where:</strong> <code>base.html</code>, <code>learn_base.html</code>, <code>dashboard.html</code>, <code>{% raw %}{{ variable }}{% endraw %}</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_blueprints') }}" class="concept-card clickable">
+      <div class="concept-icon">🧩</div>
+      <h3>Blueprints</h3>
+      <p><strong>What:</strong> Modular sets of routes (and templates/static) registered on the app.</p>
+      <p><strong>Where:</strong> <code>web_bp</code>, <code>auth_bp</code>, <code>tasks_bp</code>, <code>categories_bp</code>, <code>learn_bp</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_request_response') }}" class="concept-card clickable">
+      <div class="concept-icon">📨</div>
+      <h3>Request & Response</h3>
+      <p><strong>What:</strong> Access request data; return HTML, JSON, or redirects.</p>
+      <p><strong>Where:</strong> <code>request.json</code>, <code>request.args</code>, <code>jsonify()</code>, <code>render_template()</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_configuration') }}" class="concept-card clickable">
+      <div class="concept-icon">⚙️</div>
+      <h3>Configuration</h3>
+      <p><strong>What:</strong> App settings (secret key, database URL, env-based config).</p>
+      <p><strong>Where:</strong> <code>config.py</code>, <code>create_app(config_name)</code>, <code>app.config.from_object()</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_forms') }}" class="concept-card clickable">
+      <div class="concept-icon">📝</div>
+      <h3>Forms (Flask-WTF)</h3>
+      <p><strong>What:</strong> Form classes with validation and CSRF protection.</p>
+      <p><strong>Where:</strong> <code>LoginForm</code>, <code>TaskForm</code>, <code>form.validate_on_submit()</code>.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+
+    <a href="{{ url_for('learn.flask_database') }}" class="concept-card clickable">
+      <div class="concept-icon">🗄️</div>
+      <h3>Database (SQLAlchemy)</h3>
+      <p><strong>What:</strong> ORM: models (User, Task, Category), relationships, queries.</p>
+      <p><strong>Where:</strong> <code>User</code>, <code>Task</code>, <code>Category</code> models; <code>db.session</code>; Flask-Migrate.</p>
+      <div class="card-footer">Click to learn more →</div>
+    </a>
+  </div>
+
+  <section class="call-to-action">
+    <h3>Ready to try the app?</h3>
+    <a href="{{ url_for('web.login') }}" class="btn btn-primary btn-lg">Launch Task App Demo &rarr;</a>
+  </section>
+</div>
+{% endblock %}

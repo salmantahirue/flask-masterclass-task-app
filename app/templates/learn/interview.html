@@ -1,0 +1,68 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Interview Preparation</h1>
+    <p class="lead">Master Flask concepts with interview-ready answers and detailed explanations.</p>
+  </header>
+
+  <section class="card-section">
+    <h2>Choose Your Difficulty Level</h2>
+    <p>Select a difficulty level to practice Flask interview questions. Each question includes:</p>
+    <ul class="checklist">
+      <li>Short interview-ready answer</li>
+      <li>Detailed explanation</li>
+      <li>Real-world analogy</li>
+      <li>Code example</li>
+      <li>How it's used in our Task Management System</li>
+    </ul>
+  </section>
+
+  <div class="difficulty-grid">
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=easy" class="difficulty-card easy">
+      <div class="difficulty-icon">🟢</div>
+      <h3>Easy</h3>
+      <p>Fundamental Flask concepts</p>
+      <p class="count">10 Questions</p>
+    </a>
+
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=medium" class="difficulty-card medium">
+      <div class="difficulty-icon">🟡</div>
+      <h3>Medium</h3>
+      <p>Intermediate Flask topics</p>
+      <p class="count">10 Questions</p>
+    </a>
+
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=hard" class="difficulty-card hard">
+      <div class="difficulty-icon">🟠</div>
+      <h3>Hard</h3>
+      <p>Advanced Flask concepts</p>
+      <p class="count">10 Questions</p>
+    </a>
+
+    <a href="{{ url_for('learn.interview_preparation') }}?difficulty=expert" class="difficulty-card expert">
+      <div class="difficulty-icon">🔴</div>
+      <h3>Expert</h3>
+      <p>Expert-level design & API</p>
+      <p class="count">10 Questions</p>
+    </a>
+  </div>
+
+  <section class="card-section highlight-box">
+    <h2>How to Use This Section</h2>
+    <ol>
+      <li><strong>Read the question</strong> — Think about how you would answer it in an interview</li>
+      <li><strong>Check the short answer</strong> — See the concise, interview-ready response</li>
+      <li><strong>Study the detailed explanation</strong> — Understand the concept deeply</li>
+      <li><strong>Review the code example</strong> — See how it's implemented</li>
+      <li><strong>Connect to our project</strong> — See how we use this in the Task Management System</li>
+    </ol>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.interview_assessment') }}" class="btn btn-primary">Take Assessment Test →</a>
+    <a href="{{ url_for('learn.revision') }}" class="btn btn-secondary">Go to Revision →</a>
+  </section>
+</div>
+{% endblock %}

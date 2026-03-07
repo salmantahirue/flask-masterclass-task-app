@@ -1,0 +1,114 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Problem Statement: Task Management System</h1>
+    <p class="lead">Understanding the real-world problem we're solving with Flask.</p>
+  </header>
+
+  <section class="card-section">
+    <h2>The Real-World Scenario</h2>
+    <p>
+      Teams and individuals need a place to track work: what to do, when it is due, and whether it is done.
+      A <strong>Task Management System</strong> lets users:
+    </p>
+    <ul class="scenario-list">
+      <li>Create an account and log in</li>
+      <li>Add tasks (title, description, status, priority, due date)</li>
+      <li>Group tasks into categories (e.g. Work, Personal)</li>
+      <li>Filter and view tasks by status or priority</li>
+      <li>Edit and delete tasks and categories</li>
+    </ul>
+    <p>
+      The system must be <strong>reliable</strong> (data persists in a database), <strong>secure</strong>
+      (users must log in), and <strong>extensible</strong> (easy to add features like search or tags).
+    </p>
+  </section>
+
+  <section class="card-section">
+    <h2>Why This Problem is Perfect for Learning Flask</h2>
+    <p>
+      This is a <strong>real-world problem</strong> that naturally uses core Flask and web concepts:
+    </p>
+    <div class="why-oop-grid">
+      <div class="why-item">
+        <h4>1. Multiple Entity Types</h4>
+        <p>Users, Tasks, and Categories—each needs a model and routes (CRUD).</p>
+      </div>
+      <div class="why-item">
+        <h4>2. HTTP & REST</h4>
+        <p>GET for listing, POST for creating, PUT for updating, DELETE for deleting—with proper status codes.</p>
+      </div>
+      <div class="why-item">
+        <h4>3. Authentication</h4>
+        <p>Session-based login for the web UI; JWT for the REST API.</p>
+      </div>
+      <div class="why-item">
+        <h4>4. Templates & Forms</h4>
+        <p>Jinja2 for HTML; Flask-WTF for validation and CSRF protection.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>Detailed Requirements</h2>
+
+    <div class="requirement-section">
+      <h3>1. User Management</h3>
+      <ul class="detailed-checklist">
+        <li><strong>Registration:</strong> Email, password, optional username. Password hashed (bcrypt).</li>
+        <li><strong>Login:</strong> Session-based for web UI; returns JWT for API.</li>
+        <li><strong>Logout:</strong> Clear session / client discards token.</li>
+      </ul>
+    </div>
+
+    <div class="requirement-section">
+      <h3>2. Task Management</h3>
+      <ul class="detailed-checklist">
+        <li><strong>Create:</strong> Title, description, status (pending/in progress/completed), priority, due date, optional category.</li>
+        <li><strong>Read:</strong> List tasks (with filters: status, priority, category); view single task.</li>
+        <li><strong>Update:</strong> Edit any task field.</li>
+        <li><strong>Delete:</strong> Remove a task (owned by current user).</li>
+      </ul>
+    </div>
+
+    <div class="requirement-section">
+      <h3>3. Categories</h3>
+      <ul class="detailed-checklist">
+        <li>Create, read, update, delete categories.</li>
+        <li>Tasks can belong to one category; categories are per user.</li>
+      </ul>
+    </div>
+
+    <div class="requirement-section">
+      <h3>4. Data & API</h3>
+      <ul class="detailed-checklist">
+        <li>SQLite (or PostgreSQL) via SQLAlchemy ORM.</li>
+        <li>REST API under <code>/api/auth</code>, <code>/api/tasks</code>, <code>/api/categories</code> with JWT.</li>
+        <li>Web UI under <code>/app</code> (login, dashboard, tasks, categories) with session auth.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card-section highlight-box">
+    <h2>The "Tutorial" vs. "Architect" Mindset</h2>
+    <div class="comparison-grid">
+      <div class="bad-approach">
+        <h4>Beginner Way</h4>
+        <p>One big <code>app.py</code> with all routes.</p>
+        <p>No blueprints, no factory, no service layer.</p>
+      </div>
+      <div class="good-approach">
+        <h4>Architect Way</h4>
+        <p><strong>Application factory</strong> and <strong>Blueprints</strong> (auth, tasks, categories, web).</p>
+        <p><strong>Models</strong>, <strong>services</strong>, and clear separation of concerns.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.design') }}" class="btn btn-primary">See the Expert Design &rarr;</a>
+  </section>
+</div>
+{% endblock %}

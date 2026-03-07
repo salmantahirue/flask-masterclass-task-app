@@ -1,0 +1,43 @@
+{% extends "learn_base.html" %}
+
+{% block content %}
+<div class="content-container">
+  <header class="page-header">
+    <h1>Flask: Templates (Jinja2)</h1>
+    <p class="lead">HTML with placeholders and blocks for server-rendered pages. (<a href="https://flask.palletsprojects.com/en/3.1.x/templating/" target="_blank" rel="noopener">Flask docs</a>)</p>
+  </header>
+
+  <section class="card-section">
+    <h2>What is Jinja2?</h2>
+    <p>Jinja2 is Flask's template engine. You write HTML with <code>{% raw %}{{ variable }}{% endraw %}</code> for values and <code>{% raw %}{% block content %}{% endraw %}</code> for reusable layout. The server injects data and renders HTML.</p>
+    <div class="code-showcase">
+      <pre><code class="language-html">{% raw %}&lt;!-- base.html --&gt;
+&lt;title&gt;{% block title %}App{% endblock %}&lt;/title&gt;
+&lt;body&gt;
+  {% block content %}{% endblock %}
+&lt;/body&gt;
+
+&lt;!-- dashboard.html --&gt;
+{% extends "base.html" %}
+{% block content %}
+  &lt;h1&gt;Welcome, {{ user.username }}&lt;/h1&gt;
+  &lt;p&gt;Tasks: {{ pending_count }} pending&lt;/p&gt;
+{% endblock %}{% endraw %}</code></pre>
+    </div>
+  </section>
+
+  <section class="card-section">
+    <h2>In This Project</h2>
+    <ul class="checklist">
+      <li><strong>learn_base.html</strong> — Sidebar + main content for all learning pages.</li>
+      <li><strong>base.html</strong> — Navbar + flash messages for the live app (login, dashboard, tasks).</li>
+      <li><strong>render_template("login.html", form=form)</strong> — Pass form and data to templates.</li>
+    </ul>
+  </section>
+
+  <section class="call-to-action">
+    <a href="{{ url_for('learn.flask_routing') }}" class="btn btn-secondary">← Routing</a>
+    <a href="{{ url_for('learn.flask_blueprints') }}" class="btn btn-primary">Blueprints →</a>
+  </section>
+</div>
+{% endblock %}
